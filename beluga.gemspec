@@ -3,7 +3,7 @@ require File.expand_path('../lib/beluga/version', __FILE__)
 
 Gem::Specification.new do |gem|
   gem.authors       = ["Johnneylee Jack Rollins", "Emily Jane Dobervich"]
-  gem.email         = ["beluga-gem@narwhunderful"]
+  gem.email         = ["beluga-gem@narwhunderful.com"]
   gem.description   = %q{}
   gem.summary       = %q{}
   gem.homepage      = "http://labs.narwhunderful.com/beluga"
