@@ -2,6 +2,12 @@
 
 TODO: Write a gem description
 
+## Base Features
+
+1. Basic IRC Connection (Ping/Pong/etc...)
+2. Plugin Management (load, unload, reload, etc...)
+3. Sending IRC "events" to aforementioned plugins
+
 ## Installation
 
 Add this line to your application's Gemfile:
