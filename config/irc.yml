@@ -1,3 +1,11 @@
-servers:
-    irc.freenode.net,
-    irc.freenode.com
+:servers:
+- :host: irc.freenode.net
+  :nick: MyBelugaBot
+  :channels:
+    - "#magmawiki"
+  :plugins:
+- :host: irc.newnet.net
+  :nick: MyBelugaBot2
+  :channels:
+    - "##emilysroom"
+  :plugins:
