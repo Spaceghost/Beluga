@@ -4,7 +4,7 @@
   :channels:
     - "#magmawiki"
   :plugins: 
-    - pingback
+    - PingBack
 - :host: irc.newnet.net
   :nick: MyBelugaBot2
   :channels:
