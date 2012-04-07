@@ -4,6 +4,11 @@ require "socket"
 require "thread"
 require "yaml"
 puts Beluga::VERSION
+
+Dir.glob(File.dirname($0) + "/../plugins/*.rb") do |plugin_path|
+  load(plugin_path) #for later... name = File.basename(plugin_path, '.rb').gsub(/(^|_)(.)/) { $2.upcase }
+end
+
 module Beluga
   class Base
     attr_accessor :config
@@ -32,12 +37,12 @@ module Beluga
   end
   
   class Connection
-    def initialize(server)
-      @info = server
+    def initialize(info)
+      @info = info
       @connection = TCPSocket.open(server[:host], 6667)      
       reply("USER #{@info[:nick]} #{@info[:nick]} #{@info[:nick]} #{@info[:nick]}")
       reply("NICK #{@info[:nick]}")
-      server[:channels].each {|channel| reply("JOIN #{channel}")}
+      info[:channels].each {|channel| reply("JOIN #{channel}")}
     end
     
     def start
@@ -50,6 +55,13 @@ module Beluga
     def reply(data)
       puts ">> #{data.strip}"
       @connection.puts(data)
+    end
+  end
+  
+  class Plugin
+    def new(beluga, connection)
+      @beluga = beluga
+      @connection = connection
     end
   end
 end
