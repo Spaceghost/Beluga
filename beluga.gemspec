@@ -14,4 +14,6 @@ Gem::Specification.new do |gem|
   gem.name          = "beluga"
   gem.require_paths = ["lib"]
   gem.version       = Beluga::VERSION
+
+  gem.add_development_dependency "pry"
 end

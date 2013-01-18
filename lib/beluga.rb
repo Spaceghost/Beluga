@@ -1,69 +1,51 @@
 $LOAD_PATH << './lib'
 require "beluga/version"
+require "beluga/plugin"
 require "socket"
-require "thread"
 require "yaml"
 puts Beluga::VERSION
 
-Dir.glob(File.dirname($0) + "/../plugins/*.rb") do |plugin_path|
-  load(plugin_path) #for later... name = File.basename(plugin_path, '.rb').gsub(/(^|_)(.)/) { $2.upcase }
-end
-
 module Beluga
   class Base
-    attr_accessor :config
-    def initialize
-      load_config!
-      puts @config.inspect
-      @servers = @config[:servers]
-      @threads = []
-#require 'ruby-debug'; Debugger.start; Debugger.settings[:autoeval] = 1; Debugger.settings[:autolist] = 1; debugger
-      connect!
-      
-      @threads.each {|thread| thread.join}
+    attr_accessor :reload_command
+
+    def initialize(config)
+      @config = config
+      @nick = @config[:nick]
+    end
+
+    def load_handler
+      Beluga.send(:remove_const, 'Handler') if defined?(Beluga::Handler) == 'constant'
+      load File.join(File.dirname(File.expand_path(__FILE__)), './beluga/handler.rb')
+      @handler = Beluga::Handler.new(self, @config, @connection)
     end
 
     def connect!
-      @servers.each do |server|
-        @threads << Thread.new(server) do |s|
-          (conn = Connection.new(server)).start
-        end
+      @connection = TCPSocket.open(@config[:server], 6667)
+      load_handler
+      setup_user_and_channel
+      process
+    end
+
+    def setup_user_and_channel
+      raw_send("USER #{@nick} #{@nick} #{@nick} #{@nick}")
+      raw_send("NICK #{@nick}")
+      @config[:channels].each {|channel| raw_send("JOIN #{channel}")}
+    end
+
+    def process
+      loop do
+        /^(:[^\s]*? )?(.*?) :(.*?)$/.match(@connection.gets)
+        prefix, trailing, command, *params = [$1, $3, ($2 || "").split(" ")].flatten
+        raw_send("PONG :#{trailing}") and next if command == "PING"
+        load_handler and next if command == "PRIVMSG" and trailing.include?(@reload_command)
+        @handler.handle(prefix, trailing, command, params) rescue true
       end
     end
 
-    def load_config!
-      @config = YAML::load_file(File.dirname($0) + "/../config/irc.yml")
-    end
-  end
-  
-  class Connection
-    def initialize(info)
-      @info = info
-      @connection = TCPSocket.open(server[:host], 6667)      
-      reply("USER #{@info[:nick]} #{@info[:nick]} #{@info[:nick]} #{@info[:nick]}")
-      reply("NICK #{@info[:nick]}")
-      info[:channels].each {|channel| reply("JOIN #{channel}")}
-    end
-    
-    def start
-      loop do
-        puts "<< #{(msg = @connection.gets).to_s.strip}"
-        reply("PONG #{$1}") if /^PING (.*?)\s$/.match(msg)
-      end
-    end
-    
-    def reply(data)
+    def raw_send(data)
       puts ">> #{data.strip}"
       @connection.puts(data)
     end
   end
-  
-  class Plugin
-    def new(beluga, connection)
-      @beluga = beluga
-      @connection = connection
-    end
-  end
 end
-
-Beluga::Base.new

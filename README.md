@@ -1,6 +1,8 @@
 # Beluga
 
-TODO: Write a gem description
+Tiny (< 120 LOC) ruby modular irc bot framework that depends on nothing but the ruby standard library.
+
+Inspired by python [Beluga](https://github.com/Emily/Beluga)
 
 ## Base Features
 
@@ -24,7 +26,10 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+    b = Beluga.new(config_hash)
+    b.connect!
+
+You can alter and reload the handler class while a Beluga instance is running. To reload the handler class, simply send "reload handler" in a room the bot is connected to. You can change this command in handler itself.
 
 ## Contributing
 

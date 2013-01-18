@@ -1,12 +1,6 @@
-:servers:
-- :host: irc.freenode.net
-  :nick: MyBelugaBot
-  :channels:
-    - "#magmawiki"
-  :plugins: 
-    - PingBack
-- :host: irc.newnet.net
-  :nick: MyBelugaBot2
-  :channels:
-    - "##emilysroom"
-  :plugins:
+server: irc.freenode.net
+nick: MyBelugaBot
+channels:
+  - "#magmawiki"
+plugins:
+  - PingBack
