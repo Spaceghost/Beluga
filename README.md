@@ -2,7 +2,7 @@
 
 Tiny (< 120 LOC) ruby modular irc bot framework that depends on nothing but the ruby standard library.
 
-Inspired by python [Beluga](https://github.com/Emily/Beluga)
+The ruby take on [Emily/PyBeluga](https://github.com/Emily/PyBeluga)
 
 ## Base Features
 
