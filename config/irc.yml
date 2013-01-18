@@ -1,0 +1,6 @@
+server: irc.freenode.net
+nick: MyBelugaBot
+channels:
+  - "#magmawiki"
+plugins:
+  - PingBack
