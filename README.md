@@ -1,6 +1,6 @@
 # Beluga
 
-Tiny (< 120 LOC) ruby modular irc bot framework that depends on nothing but the ruby standard library.
+Tiny (< 150 LOC) ruby modular irc bot framework that depends on nothing but the ruby standard library.
 
 Inspired by python [Beluga](https://github.com/Emily/Beluga)
 
