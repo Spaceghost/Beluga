@@ -32,8 +32,7 @@ module Beluga
     end
 
     def setup_user_and_channel
-      raw_send("USER #{@nick} #{@nick} #{@nick} #{@nick}")
-      raw_send("NICK #{@nick}")
+      raw_send("USER #{@nick} #{@nick} #{@nick} #{@nick}\nNICK #{@nick}")
       @config[:channels].each {|channel| raw_send("JOIN #{channel}")}
     end
 

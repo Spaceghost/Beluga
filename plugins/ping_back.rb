@@ -1,8 +1,8 @@
 require "beluga/plugin.rb"
 
 class Beluga::PingBack < Beluga::Plugin
-  def initialize(base, handler, store)
-    super(base, handler, store)
+  def initialize(base, handler)
+    super(base, handler)
     handler.extend(ProcessOverride)
   end
 

@@ -18,7 +18,7 @@ class Beluga::Handler
   def load_plugin(p)
     underscore_p = p.gsub(/(.)([A-Z])/,'\1_\2').downcase
     Beluga.remove_and_reload("../plugins/#{underscore_p}.rb")
-    @plugins[p] = Beluga.const_get(p).new(@base, self, @store[p])
+    @plugins[p] = Beluga.const_get(p).new(@base, self)
   end
 
   def unload_plugins
