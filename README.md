@@ -4,6 +4,8 @@ Tiny (< 150 LOC) ruby modular irc bot framework that depends on nothing but the 
 
 The ruby take on [Emily/PyBeluga](https://github.com/Emily/PyBeluga)
 
+Beluga is at 128 LOC as of the last update of this README
+
 ## Base Features
 
 1. Basic IRC Connection (Ping/Pong/etc...)
