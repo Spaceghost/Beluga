@@ -1,6 +1,7 @@
 class Beluga::Plugin
-  def initialize(base)
+  def initialize(base, handler, store)
     @base = base
+    @handler = handler
     puts "!! #{self.class.to_s} Loaded"
   end
 
@@ -8,5 +9,6 @@ class Beluga::Plugin
   end
 
   def unload
+    nil
   end
 end

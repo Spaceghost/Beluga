@@ -16,33 +16,43 @@ class Beluga::Handler
   end
 
   def load_plugin(p)
-    Beluga.send(:remove_const, p.to_s) if defined?(Beluga.const_get(p)) == 'constant'
     underscore_p = p.gsub(/(.)([A-Z])/,'\1_\2').downcase
-    load File.join(File.dirname(File.expand_path(__FILE__)), "../../plugins/#{underscore_p}.rb")
-    (@plugins[p] = Beluga.const_get(p).new(@base)).override(self)
+    Beluga.remove_and_reload("../plugins/#{underscore_p}.rb")
+    @plugins[p] = Beluga.const_get(p).new(@base, self, @store[p])
+  end
+
+  def unload_plugins
+    @store_array = @plugins.keys.map{ |p| [p, @plugins[p].unload] }.flatten
+    #@store = Hash[*@store_array] || {}
   end
 
   def unload_plugin(p)
-    @plugins.delete(p).unload
-    Beluga.send(:remove_const, p.to_s) if defined?(Beluga.const_get(p)) == 'constant'
-  end
-
-  def reload
-    @plugins.values.each { |p| p.unload }
-    return true
+    plugin = @plugins.delete(p)
+    plugin.unload if plugin
+    unload_plugins
   end
 
   def listen
-    while msg = @connection.readline
-      puts "<< #{msg}"
+    while not @reload
+      puts "<< #{msg = @connection.readline}"
       /^(:[^\s]*? )?(.*?) :(.*?)$/.match(msg)
       prefix, trailing, command, *params = [$1, $3, ($2 || "").split(" ")].flatten
       handle(prefix, trailing, command, params)
     end
+
+    return true
   end
 
   def handle(prefix, trailing, command, params)
     @base.raw_send("PONG :#{trailing}") and return if command == "PING"
-    return reload if command == "PRIVMSG" and trailing.include?("reload handler")
+
+    if command == "PRIVMSG" and /^!handler (\w*) ?(\w*)/.match(trailing)
+      case $1
+        when "reload" then unload_plugins and @reload = true
+        #when "unload" then unload_plugin($2) and @reload = true
+        #when "load" then load_plugin($2)
+      end
+    end
   end
+
 end
