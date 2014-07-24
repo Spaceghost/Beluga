@@ -6,11 +6,12 @@ class Beluga::Handler
     @config = config
     @connection = connection
     @plugins = {}
+
     load_plugins
   end
 
   def load_plugins
-    @config[:plugins].each do |p|
+    @config['plugins'].each do |p|
       load_plugin(p)
     end
   end
@@ -46,13 +47,13 @@ class Beluga::Handler
   def handle(prefix, trailing, command, params)
     @base.raw_send("PONG :#{trailing}") and return if command == "PING"
 
-    if command == "PRIVMSG" and /^!handler (\w*) ?(\w*)/.match(trailing)
+    if command == "PRIVMSG" and /^#{@config['prefix']}(\w*) ?(\w*)/.match(trailing)
       case $1
-        when "reload" then unload_plugins and @reload = true
+        when "reload"
+          unload_plugins and @reload = true
         #when "unload" then unload_plugin($2) and @reload = true
         #when "load" then load_plugin($2)
       end
     end
   end
-
 end

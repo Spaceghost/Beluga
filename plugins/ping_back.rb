@@ -15,7 +15,7 @@ class Beluga::PingBack < Beluga::Plugin
     end
 
     def pingback_handle(prefix, trailing, command, params)
-      @base.raw_send("PRIVMSG #{params.first} :ping!") if command == "PRIVMSG" and trailing.include?(@config[:nick])
+      @base.raw_send("PRIVMSG #{params.first} :ping!") if command == "PRIVMSG" and trailing.include?(@config['nick'])
       handle_without_pingback(prefix, trailing, command, params)
     end
   end

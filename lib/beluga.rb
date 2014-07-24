@@ -16,7 +16,7 @@ module Beluga
   class Base
     def initialize(config)
       @config = config
-      @nick = @config[:nick]
+      @nick = @config['nick']
     end
 
     def load_handler
@@ -25,7 +25,13 @@ module Beluga
     end
 
     def connect!
-      (@connection = Net::BufferedIO.new(TCPSocket.open(@config[:server], 6667))).read_timeout = 240
+      (@connection = Net::BufferedIO.new(
+          TCPSocket.open(
+            @config['server'], 6667
+          )
+        )
+      ).read_timeout = 240
+
       load_handler
       setup_user_and_channel
       listen
@@ -33,7 +39,7 @@ module Beluga
 
     def setup_user_and_channel
       raw_send("USER #{@nick} #{@nick} #{@nick} #{@nick}\nNICK #{@nick}")
-      @config[:channels].each {|channel| raw_send("JOIN #{channel}")}
+      @config['channels'].each {|channel| raw_send("JOIN #{channel}")}
     end
 
     def listen
@@ -41,11 +47,10 @@ module Beluga
         while not defined? stop
           (not @handler.listen) ? stop = true : load_handler
         end
-      rescue StandardError => e
-        puts e.inspect
+      ensure
+        @connection.close
       end
 
-      @connection.close
     end
 
     def raw_send(data)
