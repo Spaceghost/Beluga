@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+require 'beluga'
+
+CONFIG = YAML.load_file('./config/irc.yml')
+
+Beluga::Base.new(CONFIG.dup).connect!
+
+
