@@ -35,16 +35,19 @@ class Beluga::Handler
 
   def listen
     while not @reload
-      puts "<< #{msg = @connection.readline}"
+      msg = @connection.readline
       /^(:[^\s]*? )?(.*?) :(.*?)$/.match(msg)
       prefix, trailing, command, *params = [$1, $3, ($2 || "").split(" ")].flatten
-      handle(prefix, trailing, command, params)
+      env = [prefix, trailing, command, params]
+
+      handle(env)
     end
 
     return true
   end
 
-  def handle(prefix, trailing, command, params)
+  def handle(env)
+    prefix, trailing, command, params = env
     @base.raw_send("PONG :#{trailing}") and return if command == "PING"
 
     if command == "PRIVMSG" and /^#{@config['prefix']}(\w*) ?(\w*)/.match(trailing)

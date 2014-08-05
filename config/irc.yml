@@ -3,4 +3,8 @@ nick: MyBelugaBot
 channels:
   - "#magmawiki"
 plugins:
-  - PingBack
+  - Middleware
+
+middleware:
+  - Hashify
+  - Factoids
